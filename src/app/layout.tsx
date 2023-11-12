@@ -16,7 +16,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body style={{background: 'url("i-like-food.svg")'}} className={inter.className}>
+          <div className='max-w-screen-lg mx-auto'>
+            {children}
+          </div>
+        </body>
     </html>
   )
 }
