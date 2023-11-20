@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 import Spinner from './Spinner';
-import { centuryHolidays, hijriahHolidays } from '../data/holidays';
+import { getHolidays } from '../data/holidays';
 import { formatDateToDM } from '../utils/shared';
 import moment from 'moment';
 
@@ -13,6 +13,7 @@ const daysOfWeek = ['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB'];
 export function Month({ name, year, month }: { name: string, year: number, month: number }): ReactNode {
   const [emptyCells, setEmptyCells] = useState<string[]>([])
   const [daysOfMonth, setDaysOfMonth] = useState<number[]>([])
+  const [holidays, setHoliday] = useState(getHolidays(year))
 
   useEffect(() => {
     // update empty cells
@@ -34,6 +35,9 @@ export function Month({ name, year, month }: { name: string, year: number, month
       }
       return daysInAMonth
     })
+
+    // update holidays
+    setHoliday(() => getHolidays(year))
   }, [year])
 
   const isHoliday = (year: number, month: number, day: number): boolean => {
@@ -42,48 +46,13 @@ export function Month({ name, year, month }: { name: string, year: number, month
     const DD = day <= 9 ? '0' + day : day
     const date = `${YYYY}-${MM}-${DD}`
 
-    const isHolidayInCenturyCalendar = centuryHolidays.findIndex((item) => `${year}-${item.date}` === date)
-    const isHolidayInHijriahCalendar = hijriahHolidays.details.findIndex((item) => {
-      if (hijriahHolidays.baseYear === year) {
-        return `${year}-${item.date}` === date
-      } else {
-        const diffYear = hijriahHolidays.baseYear - year
-        const diffDays = diffYear * 10
-        if (diffDays > 0) {
-          const newDate = moment(`${year}-${item.date}`, 'YYYY-MM-DD').add(diffDays, 'days').format('YYYY-MM-DD')
-          return newDate === date
-        } else {
-          const newDate = moment(`${year}-${item.date}`, 'YYYY-MM-DD').subtract(diffDays * -1, 'days').format('YYYY-MM-DD')
-          return newDate === date
-        }
-      }
-    })
-
-    return isHolidayInCenturyCalendar >= 0 || isHolidayInHijriahCalendar >= 0
+    const isHolidayInThisDate = holidays.findIndex((item) => `${year}-${item.date}` === date)
+    return isHolidayInThisDate >= 0
   }
 
   const holidaysInThisMonth = () => {
-    const holidaysInCentury = centuryHolidays.filter(item => (new Date(`${year}-${item.date}`).getMonth()) === month)
-
-    let newHijriahHolidays = { ...hijriahHolidays }
-    if (hijriahHolidays.baseYear !== year) {
-      const newDetails = hijriahHolidays.details.map(item => {
-        const diffYear = hijriahHolidays.baseYear - year
-        const diffDays = diffYear * 10
-        if (diffDays > 0) {
-          const newDate = moment(`${year}-${item.date}`, 'YYYY-MM-DD').add(diffDays, 'days').format('MM-DD')
-          return { ...item, date: newDate }
-        } else {
-          const newDate = moment(`${year}-${item.date}`, 'YYYY-MM-DD').subtract(diffDays * -1, 'days').format('MM-DD')
-          return { ...item, date: newDate }
-        }
-      })
-
-      newHijriahHolidays = { ...hijriahHolidays, details: newDetails }
-    }
-    const holidaysInHijriah = newHijriahHolidays.details.filter(item => (new Date(`${year}-${item.date}`).getMonth()) === month)
-    console.log(holidaysInHijriah)
-    return [...holidaysInCentury, ...holidaysInHijriah]
+    const checkHolidaysInThisMonth = holidays.filter(item => (new Date(`${year}-${item.date}`).getMonth()) === month)
+    return checkHolidaysInThisMonth
   }
 
   return (
@@ -109,8 +78,8 @@ export function Month({ name, year, month }: { name: string, year: number, month
           <div>
             <table className='text-xs mt-2 border-t'>
               <tbody>
-                {holidaysInThisMonth().map((item) => (
-                  <tr className='group'>
+                {holidaysInThisMonth().map((item, idx) => (
+                  <tr key={idx} className='group'>
                     <td className='group-first:pt-2 w-[86px]'>{formatDateToDM(`${year}-${item.date}`)}</td>
                     <td className='group-first:pt-2'>:</td>
                     <td className='group-first:pt-2 pl-1'>{item.day_name}</td>
