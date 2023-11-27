@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-export const holidays = {
+export const initHolidays = {
   baseYear: 2023,
   details: [
     {
@@ -68,6 +68,15 @@ export const holidays = {
 }
 
 export const getHolidays = (year: number) => {
+  let holidays: any = localStorage.getItem('holidays')
+
+  if (!holidays) {
+    holidays = initHolidays
+    localStorage.setItem('holidays', JSON.stringify(initHolidays))
+  } else {
+    holidays = JSON.parse(holidays)
+  }
+
   const calculatedHolidays = holidays.details.map(h => {
     if (h.type === 'static' || holidays.baseYear === year) return h
 

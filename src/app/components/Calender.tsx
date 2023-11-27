@@ -1,3 +1,5 @@
+'use client'
+
 import { ReactNode, useEffect, useState } from 'react';
 import Spinner from './Spinner';
 import { getHolidays } from '../data/holidays';
@@ -13,7 +15,7 @@ const daysOfWeek = ['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB'];
 export function Month({ name, year, month }: { name: string, year: number, month: number }): ReactNode {
   const [emptyCells, setEmptyCells] = useState<string[]>([])
   const [daysOfMonth, setDaysOfMonth] = useState<number[]>([])
-  const [holidays, setHoliday] = useState(getHolidays(year))
+  const [holidays, setHoliday] = useState<any[]>([])
 
   useEffect(() => {
     // update empty cells
@@ -70,7 +72,7 @@ export function Month({ name, year, month }: { name: string, year: number, month
                   <div className='text-center py-2.5 hover:bg-purple-200' key={idx}>{day}</div>
                 ))}
                 {daysOfMonth.map((day: number, idx: number) => (
-                  <div className={`text-center py-2.5 hover:bg-purple-200 ${isHoliday(year, month, day) ? 'text-red-400' : '[&:nth-child(7n+1)]:text-red-400 [&:nth-child(7n+6)]:text-green-600'}`} key={idx}>{day}</div>
+                  <div className={`text-center py-2.5 hover:bg-purple-200 cursor-pointer ${isHoliday(year, month, day) ? 'text-red-400' : '[&:nth-child(7n+1)]:text-red-400 [&:nth-child(7n+6)]:text-green-600'}`} key={idx}>{day}</div>
                 ))}
               </div>
             </div>
@@ -80,9 +82,9 @@ export function Month({ name, year, month }: { name: string, year: number, month
               <tbody>
                 {holidaysInThisMonth().map((item, idx) => (
                   <tr key={idx} className='group'>
-                    <td className='group-first:pt-2 w-[86px]'>{formatDateToDM(`${year}-${item.date}`)}</td>
-                    <td className='group-first:pt-2'>:</td>
-                    <td className='group-first:pt-2 pl-1'>{item.day_name}</td>
+                    <td className='font-medium group-first:pt-2 w-[86px]'>{formatDateToDM(`${year}-${item.date}`)}</td>
+                    <td className='font-medium group-first:pt-2'>:</td>
+                    <td className='font-medium group-first:pt-2 pl-1'>{item.day_name}</td>
                   </tr>
                 ))}
               </tbody>
