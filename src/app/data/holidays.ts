@@ -4,6 +4,12 @@ export const initHolidays = {
   baseYear: 2023,
   details: [
     {
+      type: 'norepeat',
+      date: '04-30',
+      day_name: 'Graduation Day',
+      year: 2023
+    },
+    {
       type: 'static',
       date: '01-01',
       day_name: 'Tahun Baru Masehi',
@@ -77,10 +83,22 @@ export const getHolidays = (year: number) => {
     holidays = JSON.parse(holidays)
   }
 
-  const calculatedHolidays = holidays.details.map(h => {
-    if (h.type === 'static' || holidays.baseYear === year) return h
+  const baseYear = holidays.baseYear
 
-    const diffYear = holidays.baseYear - year
+  // filter hari libur yang type norepeat dulu
+  const filteredNoreapetHolidays = holidays.details.filter((h: any) => {
+    if (h.type !== 'norepeat') return true
+
+    if (h.year === year) return true
+
+    return false
+  })
+
+  const calculatedHolidays = filteredNoreapetHolidays.map((h: any) => {
+    if (h.type === 'norepeat') return h
+    if (h.type === 'static' || baseYear === year) return h
+
+    const diffYear = baseYear - year
     const actualDiffDays = diffYear * (h.diff_day ?? 1)
     if (actualDiffDays > 0) {
       const newDate = moment(`${year}-${h.date}`, 'YYYY-MM-DD').add(actualDiffDays, 'days').format('YYYY-MM-DD')
