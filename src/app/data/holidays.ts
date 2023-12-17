@@ -1,5 +1,15 @@
 import moment from 'moment'
 
+// model
+// const model = {
+//   id: uuidv4(),
+//   date: searchParams.get('date'),
+//   name: '',
+//   type: 'no-repeat' | 'repeat-static' | 'repeat-dynamic',
+//   diffDay: '10',
+//   addOrSubstract: add | 'substract',
+// }
+
 export const initHolidays = {
   baseYear: 2023,
   details: [
@@ -7,7 +17,13 @@ export const initHolidays = {
       type: 'norepeat',
       date: '04-30',
       day_name: 'Graduation Day',
-      year: 2023
+      year: 2023,
+    },
+    {
+      type: 'norepeat',
+      date: '05-15',
+      day_name: 'wedding day',
+      year: 2023,
     },
     {
       type: 'static',
@@ -17,28 +33,28 @@ export const initHolidays = {
     {
       type: 'static',
       date: '05-01',
-      day_name: 'Hari Buruh'
+      day_name: 'Hari Buruh',
     },
     {
       type: 'static',
       date: '06-01',
-      day_name: 'Hari Lahir Pancasila'
+      day_name: 'Hari Lahir Pancasila',
     },
     {
       type: 'static',
       date: '08-17',
-      day_name: 'Hari Kemerdekaan RI'
+      day_name: 'Hari Kemerdekaan RI',
     },
     {
       type: 'static',
       date: '12-25',
-      day_name: 'Hari Raya Natal'
+      day_name: 'Hari Raya Natal',
     },
     {
       type: 'dynamic',
       diff_day: 10,
       date: '02-18',
-      day_name: 'Isra\' Mi\'raj Nabi Muhammad SAW',
+      day_name: "Isra' Mi'raj Nabi Muhammad SAW",
     },
     {
       type: 'dynamic',
@@ -69,8 +85,8 @@ export const initHolidays = {
       diff_day: 10,
       date: '09-28',
       day_name: 'Maulid Nabi Muhammad SAW',
-    }
-  ]
+    },
+  ],
 }
 
 export const getHolidays = (year: number) => {
@@ -104,7 +120,9 @@ export const getHolidays = (year: number) => {
       const newDate = moment(`${year}-${h.date}`, 'YYYY-MM-DD').add(actualDiffDays, 'days').format('YYYY-MM-DD')
       return { ...h, date: moment(newDate, 'YYYY-MM-DD').format('MM-DD') }
     } else {
-      const newDate = moment(`${year}-${h.date}`, 'YYYY-MM-DD').subtract(actualDiffDays * -1, 'days').format('YYYY-MM-DD')
+      const newDate = moment(`${year}-${h.date}`, 'YYYY-MM-DD')
+        .subtract(actualDiffDays * -1, 'days')
+        .format('YYYY-MM-DD')
       return { ...h, date: moment(newDate, 'YYYY-MM-DD').format('MM-DD') }
     }
   })

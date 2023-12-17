@@ -1,18 +1,16 @@
 'use client'
 
-import { ReactNode, useEffect, useState } from 'react';
-import Spinner from './Spinner';
-import { getHolidays } from '../data/holidays';
-import { formatDateToDM } from '../utils/shared';
-import moment from 'moment';
+import { ReactNode, useEffect, useState } from 'react'
+import Spinner from './Spinner'
+import { getHolidays } from '../data/holidays'
+import { formatDateToDM } from '../utils/shared'
+import moment from 'moment'
+import Link from 'next/link'
 
-const months = [
-  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-  'Juli', 'Augustus', 'September', 'Oktober', 'November', 'Desember'
-];
-const daysOfWeek = ['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB'];
+const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'Desember']
+const daysOfWeek = ['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB']
 
-export function Month({ name, year, month }: { name: string, year: number, month: number }): ReactNode {
+export function Month({ name, year, month }: { name: string; year: number; month: number }): ReactNode {
   const [emptyCells, setEmptyCells] = useState<string[]>([])
   const [daysOfMonth, setDaysOfMonth] = useState<number[]>([])
   const [holidays, setHoliday] = useState<any[]>([])
@@ -42,9 +40,17 @@ export function Month({ name, year, month }: { name: string, year: number, month
     setHoliday(() => getHolidays(year))
   }, [year])
 
+  const getDate = (year: number, month: number, day: number): string => {
+    const YYYY = year
+    const MM = month + 1 <= 9 ? '0' + (month + 1) : month + 1
+    const DD = day <= 9 ? '0' + day : day
+    const date = `${YYYY}-${MM}-${DD}`
+    return date
+  }
+
   const isHoliday = (year: number, month: number, day: number): boolean => {
     const YYYY = year
-    const MM = (month + 1) <= 9 ? '0' + (month + 1) : month + 1
+    const MM = month + 1 <= 9 ? '0' + (month + 1) : month + 1
     const DD = day <= 9 ? '0' + day : day
     const date = `${YYYY}-${MM}-${DD}`
 
@@ -53,7 +59,7 @@ export function Month({ name, year, month }: { name: string, year: number, month
   }
 
   const holidaysInThisMonth = () => {
-    const checkHolidaysInThisMonth = holidays.filter(item => (new Date(`${year}-${item.date}`).getMonth()) === month)
+    const checkHolidaysInThisMonth = holidays.filter((item) => new Date(`${year}-${item.date}`).getMonth() === month)
     return checkHolidaysInThisMonth
   }
 
@@ -66,13 +72,25 @@ export function Month({ name, year, month }: { name: string, year: number, month
             <div className='min-h-[250px]'>
               <div className='grid grid-cols-7 text-xs'>
                 {daysOfWeek.map((dayName: string, idx: number) => (
-                  <div className='text-center py-2.5 hover:bg-purple-200' key={idx}>{dayName}</div>
+                  <div className='text-center py-2.5' key={idx}>
+                    {dayName}
+                  </div>
                 ))}
                 {emptyCells.map((day: string, idx: number) => (
-                  <div className='text-center py-2.5 hover:bg-purple-200' key={idx}>{day}</div>
+                  <div className='text-center py-2.5' key={idx}>
+                    {day}
+                  </div>
                 ))}
                 {daysOfMonth.map((day: number, idx: number) => (
-                  <div className={`text-center py-2.5 hover:bg-purple-200 cursor-pointer ${isHoliday(year, month, day) ? 'text-red-400' : '[&:nth-child(7n+1)]:text-red-400 [&:nth-child(7n+6)]:text-green-600'}`} key={idx}>{day}</div>
+                  <Link
+                    href={`/add-holiday?date=${getDate(year, month, day)}`}
+                    className={`text-center py-2.5 hover:bg-purple-200 cursor-pointer ${
+                      isHoliday(year, month, day) ? 'text-red-400' : '[&:nth-child(7n+1)]:text-red-400 [&:nth-child(7n+6)]:text-green-600'
+                    }`}
+                    key={idx}
+                  >
+                    {day}
+                  </Link>
                 ))}
               </div>
             </div>
@@ -91,16 +109,21 @@ export function Month({ name, year, month }: { name: string, year: number, month
             </table>
           </div>
         </div>
-      ) : <div className='text-center'><Spinner /></div>}
+      ) : (
+        <div className='text-center'>
+          <Spinner />
+        </div>
+      )}
     </>
-
   )
 }
 
 export default function Calendar({ year }: { year: number }): ReactNode {
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 py-10 px-6'>
-      {months.map((month: string, idx: number) => <Month key={idx} name={month} year={year} month={+idx} />)}
+      {months.map((month: string, idx: number) => (
+        <Month key={idx} name={month} year={year} month={+idx} />
+      ))}
     </div>
   )
 }
