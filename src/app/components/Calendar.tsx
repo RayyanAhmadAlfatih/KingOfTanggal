@@ -2,12 +2,11 @@
 
 import { ReactNode, useEffect, useState } from 'react'
 import Spinner from './Spinner'
-import { getHolidays } from '../data/holidays'
+import { getHolidaysByYear } from '../data/holidays'
 import { formatDateToDM } from '../utils/shared'
-import moment from 'moment'
 import Link from 'next/link'
 
-const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'Desember']
+const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 const daysOfWeek = ['MIN', 'SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB']
 
 export function Month({ name, year, month }: { name: string; year: number; month: number }): ReactNode {
@@ -37,7 +36,7 @@ export function Month({ name, year, month }: { name: string; year: number; month
     })
 
     // update holidays
-    setHoliday(() => getHolidays(year))
+    setHoliday(() => getHolidaysByYear(year))
   }, [year])
 
   const getDate = (year: number, month: number, day: number): string => {
@@ -54,12 +53,12 @@ export function Month({ name, year, month }: { name: string; year: number; month
     const DD = day <= 9 ? '0' + day : day
     const date = `${YYYY}-${MM}-${DD}`
 
-    const isHolidayInThisDate = holidays.findIndex((item) => `${year}-${item.date}` === date)
+    const isHolidayInThisDate = holidays.findIndex((item) => item.date === date)
     return isHolidayInThisDate >= 0
   }
 
   const holidaysInThisMonth = () => {
-    const checkHolidaysInThisMonth = holidays.filter((item) => new Date(`${year}-${item.date}`).getMonth() === month)
+    const checkHolidaysInThisMonth = holidays.filter((item) => new Date(item.date).getMonth() === month)
     return checkHolidaysInThisMonth
   }
 
@@ -100,9 +99,9 @@ export function Month({ name, year, month }: { name: string; year: number; month
               <tbody>
                 {holidaysInThisMonth().map((item, idx) => (
                   <tr key={idx} className='group'>
-                    <td className='font-medium group-first:pt-2 w-[86px]'>{formatDateToDM(`${year}-${item.date}`)}</td>
-                    <td className='font-medium group-first:pt-2'>:</td>
-                    <td className='font-medium group-first:pt-2 pl-1'>{item.day_name}</td>
+                    <td className='font-medium group-first:pt-2 w-[86px] align-top'>{formatDateToDM(item.date)}</td>
+                    <td className='font-medium group-first:pt-2 align-top'>:</td>
+                    <td className='font-medium group-first:pt-2 pl-1 align-top'>{item.name}</td>
                   </tr>
                 ))}
               </tbody>

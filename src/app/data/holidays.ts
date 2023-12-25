@@ -7,91 +7,104 @@ import moment from 'moment'
 //   name: '',
 //   type: 'no-repeat' | 'repeat-static' | 'repeat-dynamic',
 //   diffDay: '10',
-//   addOrSubstract: add | 'substract',
+//   earlierNextYear: 'earlier' | 'late',
 // }
 
-export const initHolidays = {
-  baseYear: 2023,
-  details: [
-    {
-      type: 'norepeat',
-      date: '04-30',
-      day_name: 'Graduation Day',
-      year: 2023,
-    },
-    {
-      type: 'norepeat',
-      date: '05-15',
-      day_name: 'wedding day',
-      year: 2023,
-    },
-    {
-      type: 'static',
-      date: '01-01',
-      day_name: 'Tahun Baru Masehi',
-    },
-    {
-      type: 'static',
-      date: '05-01',
-      day_name: 'Hari Buruh',
-    },
-    {
-      type: 'static',
-      date: '06-01',
-      day_name: 'Hari Lahir Pancasila',
-    },
-    {
-      type: 'static',
-      date: '08-17',
-      day_name: 'Hari Kemerdekaan RI',
-    },
-    {
-      type: 'static',
-      date: '12-25',
-      day_name: 'Hari Raya Natal',
-    },
-    {
-      type: 'dynamic',
-      diff_day: 10,
-      date: '02-18',
-      day_name: "Isra' Mi'raj Nabi Muhammad SAW",
-    },
-    {
-      type: 'dynamic',
-      diff_day: 10,
-      date: '03-23',
-      day_name: '1 Ramadhan',
-    },
-    {
-      type: 'dynamic',
-      diff_day: 10,
-      date: '04-22',
-      day_name: 'Hari Raya Idul Fitri',
-    },
-    {
-      type: 'dynamic',
-      diff_day: 10,
-      date: '06-29',
-      day_name: 'Hari Raya Idul Adha',
-    },
-    {
-      type: 'dynamic',
-      diff_day: 10,
-      date: '07-19',
-      day_name: 'Tahun Baru Islam',
-    },
-    {
-      type: 'dynamic',
-      diff_day: 10,
-      date: '09-28',
-      day_name: 'Maulid Nabi Muhammad SAW',
-    },
-  ],
-}
+export const initHolidays = [
+  {
+    id: 'h3',
+    date: '2023-01-01',
+    name: 'Tahun Baru Masehi',
+    type: 'repeat-static',
+    diffDay: '',
+    earlierNextYear: '',
+  },
+  {
+    id: 'h4',
+    date: '2023-05-01',
+    name: 'Hari Buruh',
+    type: 'repeat-static',
+    diffDay: '',
+    earlierNextYear: '',
+  },
+  {
+    id: 'h5',
+    date: '2023-06-01',
+    name: 'Hari Lahir Pancasila',
+    type: 'repeat-static',
+    diffDay: '',
+    earlierNextYear: '',
+  },
+  {
+    id: 'h6',
+    date: '2023-08-17',
+    name: 'Hari Kemerdekaan RI',
+    type: 'repeat-static',
+    diffDay: '',
+    earlierNextYear: '',
+  },
+  {
+    id: 'h7',
+    date: '2023-12-25',
+    name: 'Hari Raya Natal',
+    type: 'repeat-static',
+    diffDay: '',
+    earlierNextYear: '',
+  },
+  {
+    id: 'h8',
+    date: '2023-02-18',
+    name: "Isra' Mi'raj Nabi Muhammad SAW",
+    type: 'repeat-dynamic',
+    diffDay: 10,
+    earlierNextYear: 'earlier',
+  },
+  {
+    id: 'h9',
+    date: '2023-03-23',
+    name: '1 Ramadhan',
+    type: 'repeat-dynamic',
+    diffDay: 10,
+    earlierNextYear: 'earlier',
+  },
+  {
+    id: 'h10',
+    date: '2023-04-22',
+    name: 'Hari Raya Idul Fitri',
+    type: 'repeat-dynamic',
+    diffDay: 10,
+    earlierNextYear: 'earlier',
+  },
+  {
+    id: 'h11',
+    date: '2023-06-29',
+    name: 'Hari Raya Idul Adha',
+    type: 'repeat-dynamic',
+    diffDay: 10,
+    earlierNextYear: 'earlier',
+  },
+  {
+    id: 'h12',
+    date: '2023-07-19',
+    name: 'Tahun Baru Islam',
+    type: 'repeat-dynamic',
+    diffDay: 10,
+    earlierNextYear: 'earlier',
+  },
+  {
+    id: 'h13',
+    date: '2023-09-28',
+    name: 'Maulid Nabi Muhammad SAW',
+    type: 'repeat-dynamic',
+    diffDay: 10,
+    earlierNextYear: 'earlier',
+  },
+]
 
-export const getHolidays = (year: number) => {
+export const getHolidaysByYear = (year: number) => {
   let holidays: any = localStorage.getItem('holidays')
 
+  // sync with local storage
   if (!holidays) {
     holidays = initHolidays
     localStorage.setItem('holidays', JSON.stringify(initHolidays))
@@ -99,33 +112,82 @@ export const getHolidays = (year: number) => {
     holidays = JSON.parse(holidays)
   }
 
-  const baseYear = holidays.baseYear
+  const calculatedHolidays = holidays.filter((h: any) => {
+    const yearOfHoliday = +moment(h.date, 'YYYY-MM-DD').year()
 
-  // filter hari libur yang type norepeat dulu
-  const filteredNoreapetHolidays = holidays.details.filter((h: any) => {
-    if (h.type !== 'norepeat') return true
+    if (h.type === 'no-repeat' && yearOfHoliday === year) return h
 
-    if (h.year === year) return true
+    if (h.type === 'repeat-static') {
+      if (yearOfHoliday === year) return h
 
-    return false
-  })
+      // change year of holiday.date
+      const dateWithYearChanged = moment(h.date, 'YYYY-MM-DD').set('year', year).format('YYYY-MM-DD')
+      h.date = dateWithYearChanged
+      return h
+    }
 
-  const calculatedHolidays = filteredNoreapetHolidays.map((h: any) => {
-    if (h.type === 'norepeat') return h
-    if (h.type === 'static' || baseYear === year) return h
+    if (h.type === 'repeat-dynamic') {
+      if (yearOfHoliday === year) return h
 
-    const diffYear = baseYear - year
-    const actualDiffDays = diffYear * (h.diff_day ?? 1)
-    if (actualDiffDays > 0) {
-      const newDate = moment(`${year}-${h.date}`, 'YYYY-MM-DD').add(actualDiffDays, 'days').format('YYYY-MM-DD')
-      return { ...h, date: moment(newDate, 'YYYY-MM-DD').format('MM-DD') }
-    } else {
-      const newDate = moment(`${year}-${h.date}`, 'YYYY-MM-DD')
-        .subtract(actualDiffDays * -1, 'days')
-        .format('YYYY-MM-DD')
-      return { ...h, date: moment(newDate, 'YYYY-MM-DD').format('MM-DD') }
+      // calculate calculate total diff day
+      let diffYear = year - yearOfHoliday
+      if (diffYear < 0) diffYear * -1
+      const totalDiffDay = h.diffDay * diffYear
+
+      // change year of holiday.date first
+      const dateWithYearChanged = moment(h.date, 'YYYY-MM-DD').set('year', year).format('YYYY-MM-DD')
+
+      // then add/substract diff days
+      let dateWithDayChanged
+      if (h.earlierNextYear === 'earlier') {
+        dateWithDayChanged = moment(dateWithYearChanged, 'YYYY-MM-DD').clone().subtract(totalDiffDay, 'days').format('YYYY-MM-DD')
+      }
+      if (h.earlierNextYear === 'late') {
+        dateWithDayChanged = moment(dateWithYearChanged, 'YYYY-MM-DD').clone().add(totalDiffDay, 'days').format('YYYY-MM-DD')
+      }
+
+      h.date = dateWithDayChanged
+      return h
     }
   })
 
   return calculatedHolidays
+}
+
+export const getHolidaysByDate = (date: string) => {
+  const year = +moment(date, 'YYYY-MM-DD').year()
+
+  const holidays = getHolidaysByYear(year).filter((item: any) => item.date === date)
+  return holidays
+}
+
+export const createHoliday = (data: any) => {
+  let holidays: any = localStorage.getItem('holidays')
+  holidays = JSON.parse(holidays)
+
+  holidays.unshift(data)
+  localStorage.setItem('holidays', JSON.stringify(holidays))
+
+  return { success: true }
+}
+
+export const deleteHoliday = (id: string) => {
+  let holidays: any = localStorage.getItem('holidays')
+  holidays = JSON.parse(holidays)
+
+  holidays = holidays.filter((item: any) => item.id !== id)
+  localStorage.setItem('holidays', JSON.stringify(holidays))
+
+  return { success: true }
+}
+
+export const updateHoliday = (data: any) => {
+  let holidays: any = localStorage.getItem('holidays')
+  holidays = JSON.parse(holidays)
+
+  holidays = holidays.filter((item: any) => item.id !== data.id)
+  holidays.unshift(data)
+  localStorage.setItem('holidays', JSON.stringify(holidays))
+
+  return { success: true }
 }
