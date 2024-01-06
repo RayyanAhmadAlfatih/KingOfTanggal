@@ -6,7 +6,7 @@ import Setting from './components/Setting'
 import Modal from './components/Modal'
 
 export default function Home() {
-  const [year, setYear] = useState<number>(2023)
+  const [year, setYear] = useState<number>(2024)
 
   return (
     <div>
