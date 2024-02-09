@@ -119,10 +119,22 @@ export function Month({ name, year, month }: { name: string; year: number; month
 
 export default function Calendar({ year }: { year: number }): ReactNode {
   return (
-    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 py-10 px-6'>
-      {months.map((month: string, idx: number) => (
-        <Month key={idx} name={month} year={year} month={+idx} />
-      ))}
+    <div id='calendar' className='bg-white rounded-lg shadow-md overflow-hidden'>
+      <div className='bg-purple-300 p-6'>
+        <div className='flex items-center space-x-2'>
+          <h1 className='text-3xl text-gray-800 font-medium'>Kalender {year}</h1>
+        </div>
+      </div>
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 py-10 px-6'>
+        {months.map((month: string, idx: number) => (
+          <Month key={idx} name={month} year={year} month={+idx} />
+        ))}
+      </div>
+      <div className='flex justify-center py-6'>
+        <a className='text-blue-300 font-medium text-sm' href='https://www.linkedin.com/in/aulia-sabri-a339711a3/'>
+          &copy; auliasabri.io
+        </a>
+      </div>
     </div>
   )
 }
