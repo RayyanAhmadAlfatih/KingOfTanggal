@@ -9,7 +9,7 @@ export default function Home() {
   const [year, setYear] = useState<number>(2024)
 
   return (
-    <main>
+    <main className='py-3'>
       <section className='m-3'>
         <Setting year={year} setYear={setYear} />
       </section>

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Providers as NextUIProvider } from './nextui-provider'
 import { Inter } from 'next/font/google'
 import './globals.css'
 
@@ -13,10 +14,12 @@ export default function RootLayout(props: { children: React.ReactNode; modal: Re
   return (
     <html lang='en'>
       <body style={{ background: 'url("i-like-food.svg")' }} className={inter.className}>
-        <div className='max-w-screen-lg mx-auto'>
-          {props.children}
-          {props.modal}
-        </div>
+        <NextUIProvider>
+          <div className='max-w-screen-lg mx-auto'>
+            {props.children}
+            {props.modal}
+          </div>
+        </NextUIProvider>
       </body>
     </html>
   )
