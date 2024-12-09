@@ -17,6 +17,7 @@ export function Month({ name, year, month, holidays, handleClickDate }: any): Re
   const [daysOfMonth, setDaysOfMonth] = useState<number[]>([])
 
   useEffect(() => {
+    // update empty cells
     setEmptyCells(() => {
       const emptyCellsInAMonth: string[] = []
       const startingDay: number = new Date(year, month, 1).getDay()
@@ -26,6 +27,7 @@ export function Month({ name, year, month, holidays, handleClickDate }: any): Re
       return emptyCellsInAMonth
     })
 
+    // update days
     setDaysOfMonth(() => {
       const daysInAMonth: number[] = []
       const amountDaysInMonth: number = new Date(year, month + 1, 0).getDate()
@@ -117,11 +119,12 @@ export function Month({ name, year, month, holidays, handleClickDate }: any): Re
 
 export default function Calendar({ year }: { year: number }): ReactNode {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [currentDate, setCurrentDate] = useState<string>('')
+  const [currentDate, setCurrentDate] = useState<string>('') 
   const [holidays, setHoliday] = useState<any[]>([])
 
   // effect
   useEffect(() => {
+    // get holidays
     getHolidaysInYear()
   }, [year])
 
@@ -138,23 +141,23 @@ export default function Calendar({ year }: { year: number }): ReactNode {
 
   return (
     <>
-      <div
-        id='calendar'
-        className='bg-[url("https://kingofcoding.my.id/img/bg_K-O-T.png'
-      >
+      <div id='calendar' className='bg-white rounded-lg shadow-md overflow-hidden'>
         <div className='bg-purple-300 p-6'>
           <div className='flex items-center space-x-2'>
             <h1 className='text-3xl text-gray-800 font-medium'>Kalender {year}</h1>
           </div>
+          {/* Menambahkan H1 dan paragraf */}
+          <h1 className='text-4xl font-bold text-center mt-4'>Selamat Datang di King Of Tanggal</h1>
+          <p className='text-center text-sm mt-2'>By Rayyan Ahmad Alfatih</p>
         </div>
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 py-10 px-6'>
           {months.map((month: string, idx: number) => (
             <Month key={idx} name={month} year={year} month={+idx} holidays={holidays} handleClickDate={handleClickDate} />
           ))}
         </div>
-        <div className='flex justify-center py-6'>
+       <div className='flex justify-center py-6'>
           <a className='text-blue-300 font-medium text-sm' href='https://kingofcoding.my.id'>
-            &copy; Rayyan Ahmad Alfatih
+            &copy; King Of Tanggal
           </a>
         </div>
       </div>
