@@ -157,7 +157,7 @@ export default function Calendar({ year }: { year: number }): ReactNode {
         </div>
        <div className='flex justify-center py-6'>
           <a className='text-blue-300 font-medium text-sm' href='https://kingofcoding.my.id'>
-            &copy; King Of Coding
+            &copy; King Of Tanggal
           </a>
         </div>
       </div>
