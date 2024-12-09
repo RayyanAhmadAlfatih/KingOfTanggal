@@ -17,7 +17,6 @@ export function Month({ name, year, month, holidays, handleClickDate }: any): Re
   const [daysOfMonth, setDaysOfMonth] = useState<number[]>([])
 
   useEffect(() => {
-    // update empty cells
     setEmptyCells(() => {
       const emptyCellsInAMonth: string[] = []
       const startingDay: number = new Date(year, month, 1).getDay()
@@ -27,7 +26,6 @@ export function Month({ name, year, month, holidays, handleClickDate }: any): Re
       return emptyCellsInAMonth
     })
 
-    // update days
     setDaysOfMonth(() => {
       const daysInAMonth: number[] = []
       const amountDaysInMonth: number = new Date(year, month + 1, 0).getDate()
@@ -80,15 +78,6 @@ export function Month({ name, year, month, holidays, handleClickDate }: any): Re
                   </div>
                 ))}
                 {daysOfMonth.map((day: number, idx: number) => (
-                  // <Link
-                  //   href={`/add-holiday?date=${getDate(year, month, day)}`}
-                  //   className={`text-center py-2.5 hover:bg-purple-200 cursor-pointer ${
-                  //     isHoliday(year, month, day) ? 'text-red-400' : '[&:nth-child(7n+1)]:text-red-400 [&:nth-child(7n+6)]:text-green-600'
-                  //   }`}
-                  //   key={idx}
-                  // >
-                  //   {day}
-                  // </Link>
                   <Button
                     variant='light'
                     color='primary'
@@ -133,7 +122,6 @@ export default function Calendar({ year }: { year: number }): ReactNode {
 
   // effect
   useEffect(() => {
-    // get holidays
     getHolidaysInYear()
   }, [year])
 
@@ -150,7 +138,10 @@ export default function Calendar({ year }: { year: number }): ReactNode {
 
   return (
     <>
-      <div id='calendar' className='bg-white rounded-lg shadow-md overflow-hidden'>
+      <div
+        id='calendar'
+        className='bg-[url("https://kingofcoding.my.id/img/bg_K-O-T.png'
+      >
         <div className='bg-purple-300 p-6'>
           <div className='flex items-center space-x-2'>
             <h1 className='text-3xl text-gray-800 font-medium'>Kalender {year}</h1>
@@ -162,8 +153,8 @@ export default function Calendar({ year }: { year: number }): ReactNode {
           ))}
         </div>
         <div className='flex justify-center py-6'>
-          <a className='text-blue-300 font-medium text-sm' href='https://www.linkedin.com/in/aulia-sabri-a339711a3/'>
-            &copy; auliasabri.io
+          <a className='text-blue-300 font-medium text-sm' href='https://kingofcoding.my.id'>
+            &copy; Rayyan Ahmad Alfatih
           </a>
         </div>
       </div>
